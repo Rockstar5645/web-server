@@ -10,11 +10,11 @@ public class Response {
 
         String response_body = "This request was recieved at " + LocalDateTime.now().toString();
         byte[] by = new byte[req.body.size()]; 
-        Byte[] B = req.body.toArray(new Byte[0]); 
         for (int i = 0; i < req.body.size(); i++)
-            by[i] = B[i]; 
+            by[i] = req.body.get(i); 
         String body = new String(by, "UTF-8"); 
         response_body += "\n request body was: " + body;
+        response_body += "\n content length: " + body.length(); 
 
         String response = "HTTP/1.1 200 OK\r\n";
         response += ("Date: " + LocalDateTime.now().toString() + "\r\n"); 

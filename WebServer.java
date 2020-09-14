@@ -1,11 +1,9 @@
 import java.util.*; 
+import java.io.*; 
 
 public class WebServer {
 
-    public static void main(String... args) {
-        System.out.println("hello wrld"); 
+    public static void main(String... args) throws IOException {
         Config a = new Config(); 
-
-        a.say_hi(); 
     }
 }

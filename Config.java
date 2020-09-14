@@ -50,11 +50,9 @@ public class Config {
         Path mime = Paths.get("./conf/mime.types"); 
         Mime = new HashMap<>(); 
 
-        BufferedReader mimeStream = null; 
-
-        try {
-            mimeStream = new BufferedReader(new FileReader(mime.toString())); 
-
+        try (
+            BufferedReader mimeStream =  new BufferedReader(new FileReader(mime.toString()));
+        ) {
             String l; 
             while ((l = mimeStream.readLine()) != null) {
                 l.trim(); 
@@ -71,10 +69,6 @@ public class Config {
                     Mime.put(extension, mime_type); 
                 }
             }
-        } finally {
-            if (mimeStream != null) {
-                mimeStream.close(); 
-            }
         }
 
         // go through the individual lines in the httpd.conf file 
@@ -83,11 +77,11 @@ public class Config {
         Alias = new HashMap<>(); 
         ScriptAlias = new HashMap<>(); 
 
-        BufferedReader inputStream = null; 
+        
 
-        try {
-            inputStream = new BufferedReader(new FileReader(conf.toString())); 
-
+        try (
+            BufferedReader inputStream = new BufferedReader(new FileReader(conf.toString())); 
+        ) {
             String l;
             while ((l = inputStream.readLine()) != null) {
 
@@ -125,11 +119,6 @@ public class Config {
                 }
 
             }
-        } finally {
-            if (inputStream != null) {
-                inputStream.close(); 
-            }
         }
-        
     }
 }

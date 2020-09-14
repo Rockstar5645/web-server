@@ -10,10 +10,15 @@ public class Config {
     private String LogFile; 
     private Map<String, String> ScriptAlias; 
     private Map<String, String> Alias; 
+    private Map<String, String> Mime; 
     
     // TODO: add if clause to read these two directives as well 
     private String AccessFile; 
     private String DirectoryIndex; 
+
+    public String getMimeType(String extension) {
+        return Mime.get(extension); 
+    }
 
     public String getServerRoot() {
         return ServerRoot; 
@@ -40,6 +45,38 @@ public class Config {
     }
 
     public Config() throws IOException {
+
+        /// go through the lines in the mime.types file 
+        Path mime = Paths.get("./conf/mime.types"); 
+        Mime = new HashMap<>(); 
+
+        BufferedReader mimeStream = null; 
+
+        try {
+            mimeStream = new BufferedReader(new FileReader(mime.toString())); 
+
+            String l; 
+            while ((l = mimeStream.readLine()) != null) {
+                l.trim(); 
+                if (l.length() == 0 || l.charAt(0) == '#') {
+                    // this is a comment
+                    continue; 
+                }
+
+                StringTokenizer st = new StringTokenizer(l); 
+                String mime_type = st.nextToken(); 
+
+                while (st.hasMoreTokens()) {
+                    String extension = st.nextToken(); 
+                    Mime.put(extension, mime_type); 
+                }
+            }
+        } finally {
+            if (mimeStream != null) {
+                mimeStream.close(); 
+            }
+        }
+
         // go through the individual lines in the httpd.conf file 
         Path conf = Paths.get("./conf/httpd.conf"); 
         

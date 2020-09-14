@@ -14,7 +14,7 @@ public class WebServer {
                 ServerSocket serverSocket = new ServerSocket(a.getPort());
             ) {
                 Socket clientSocket = serverSocket.accept();
-                RequestProcessor rp = new RequestProcessor(clientSocket); 
+                RequestProcessor rp = new RequestProcessor(clientSocket, a); 
                 (new Thread(rp)).start(); 
             }
         }

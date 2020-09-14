@@ -7,6 +7,7 @@ import java.nio.charset.*;
 public class RequestProcessor implements Runnable {
 
     Socket clientSocket = null; 
+    Config a_config = null; 
 
     public void run() {
         try (
@@ -14,9 +15,10 @@ public class RequestProcessor implements Runnable {
             InputStream in = clientSocket.getInputStream();
         ) {
             Request req = new Request(in); 
-            Response res = new Response(req, out); 
+            Response res = new Response(req, out, a_config); 
         } catch (Exception e) {
             // do nothing 
+            System.out.println("Something happenned here"); 
         } finally {
             try {
                 if (clientSocket != null) {
@@ -28,7 +30,8 @@ public class RequestProcessor implements Runnable {
         }
     }
     
-    public RequestProcessor(Socket clientSocket) {
+    public RequestProcessor(Socket clientSocket, Config a) {
         this.clientSocket = clientSocket; 
+        this.a_config = a; 
     }
 }

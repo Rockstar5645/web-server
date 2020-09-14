@@ -17,6 +17,17 @@ public class WebServer {
                 InputStream in = clientSocket.getInputStream();
             ) { 
                 Request req = new Request(in); 
+                System.out.println(req.Headers);
+                System.out.println(req.http_method);
+                System.out.println(req.path);
+                System.out.println(req.version);
+                byte[] b = new byte[req.body.size()]; 
+                Byte[] B = req.body.toArray(new Byte[0]); 
+                for (int i = 0; i < req.body.size(); i++)
+                    b[i] = B[i]; 
+                String body = new String(b, "UTF-8"); 
+                System.out.println(body); 
+
                 Response res = new Response(req, out); 
             }
         }

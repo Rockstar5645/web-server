@@ -6,12 +6,22 @@ import java.nio.charset.*;
 
 public class Response {
 
+    // we have a res.return_400 and res.return_500, res.return_404 method 
+
+    // we have a method called file_exists, and if it doesn't, we call return_404
+
+    // create exec_script that accepts path, and instantiates a process builder 
+
     public Response(Request req, OutputStream out, Config a) throws IOException {
         String response = "HTTP/1.1 200 OK\r\n";
         response += ("Date: " + LocalDateTime.now().toString() + "\r\n"); 
         response += "Server: akws\r\n";
         response += "Connection: close\r\n";
+        String response_body = "Hello, how are you?"; 
+        response += "Connection-Length: " + response_body.length() + "\r\n\r\n"; 
+        response += response_body; 
 
+        /*
         int len = 0; 
         byte[] lbfile = null; 
         if (req.http_method.equals("GET")) {
@@ -33,9 +43,11 @@ public class Response {
             }
         }
         response += "Content-Length: " + len + "\r\n\r\n"; 
+        */
     
         byte[] b = response.getBytes(Charset.forName("UTF-8")); 
         
+        /*
         byte[] final_res = new byte[b.length + lbfile.length];
         int i = 0, j = 0; 
         for (i = 0; i < b.length; i++) {
@@ -47,8 +59,9 @@ public class Response {
             final_res[j] = lbfile[i]; 
             j++; 
         }
+        */
         
-        out.write(final_res); 
+        out.write(b); 
 
     }
 }

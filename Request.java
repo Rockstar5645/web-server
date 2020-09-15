@@ -8,9 +8,29 @@ public class Request {
 
     public Map<String, String> Headers; 
     public String http_method; 
-    public String path; 
+
+    public String path; // this is the path
+    
     public String version; 
+
     List<Byte> body; 
+    public Boolean error; 
+    public Boolean is_script; 
+
+    // create method Boolean is_uri_alised(), if it is, also modify the path, and resolve the full URI
+
+    // create method BOolean is_script_alised(), if it is, modify the path, and resolve the FULL URI, also,
+    // we can set a variable, saying it's a script
+
+    // create method void resolve_document_root(String doc_root)
+
+    // create method void is_file(), if it is a file, we're good tog, otherwise, check directory index, 
+    // 
+
+    /*
+        If at any point, there is an error in parsing the request, break, and set the error flag to true; 
+        Otherwise, we go through the entire parseing process, and set it to false
+    */
 
     public Request(InputStream in) throws IOException {
 

@@ -25,9 +25,13 @@ public class RequestProcessor implements Runnable {
                 // this is indeed uri aliased
                 System.out.println("It is URI aliased"); 
                 System.out.println(req.path); 
-            } else {
-                System.out.println("It is not URI aliased"); 
+            } else if (req.is_script_aliased(a_config.getScriptAliasMap())){
+                System.out.println("It is script URI aliased"); 
                 System.out.println(req.path); 
+            } else {
+                System.out.println("Not aliased or script aliased.");
+                req.resolve_document_root(a_config.getDocumentRoot());
+                System.out.println(req.path);
             }
 
             // check if req.path is script alised, if it's not uri alised, by calling req.is_script_alised()

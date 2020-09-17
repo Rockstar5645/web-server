@@ -40,6 +40,10 @@ public class Config {
         return ScriptAlias.get(key); 
     }
 
+    public Map<String, String> getScriptAliasMap(){
+      return ScriptAlias;
+    }
+
     public Map<String, String> getAliasMap() {
         return Alias; 
     }

@@ -47,6 +47,41 @@ public class Request {
         return false; 
     }
 
+
+
+    public Boolean is_script_aliased(Map<String, String> ScriptAlias){
+      int i = 0; 
+      while (i < path.length()) {
+          if (path.charAt(i) == '/')
+              break;
+          else
+              i++; 
+      }
+
+      if (i == path.length())
+          return false;       // it is not script aliased 
+
+      
+      String prefix = "/" + path.substring(0, i + 1); 
+      if (ScriptAlias.containsKey(prefix)) {
+          // so it is uri aliased
+          String full_path = ScriptAlias.get(prefix) + path.substring(i + 1, path.length()); 
+          path = full_path; 
+
+          is_script = true; 
+          return true; 
+      }
+
+      return false; 
+    }
+
+    // create method void resolve_document_root(String doc_root)
+    public void resolve_document_root(String doc_root){
+      String full_path = doc_root + path;
+      path = full_path;
+    }
+
+
     // create method BOolean is_script_alised(), if it is, modify the path, and resolve the FULL URI, also,
     // we can set a variable, saying it's a script
 
@@ -116,33 +151,9 @@ public class Request {
         }
     }
 
-  // create method Boolean is_uri_alised(), if it is, also modify the path, and resolve the full URI
-  public Boolean is_uri_aliased(){
-    if(Headers.containsKey("Alias")){
-
-      return true;
-    }
-
-    return false;
-  }
 
 
-// create method BOolean is_script_alised(), if it is, modify the path, and resolve the FULL URI, also,
-// we can set a variable, saying it's a script
-  public Boolean is_script_aliased(){
-    if(Headers.containsKey("ScriptAlias")){
-      return true;
-    }
-    else{
-      resolve_document_root(path);
-    }
-    return false;
-  }
 
-// create method void resolve_document_root(String doc_root)
-  public void resolve_document_root(String doc_root){
-   
-  }
 
 // create method void is_file(), if it is a file, we're good to go, otherwise, check directory index
   public void is_file(){

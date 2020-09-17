@@ -83,13 +83,10 @@ public class Request {
     }
 
 
-    // create method BOolean is_script_alised(), if it is, modify the path, and resolve the FULL URI, also,
-    // we can set a variable, saying it's a script
-
-    // create method void resolve_document_root(String doc_root)
-
-    // create method void is_file(), if it is a file, we're good tog, otherwise, check directory index, 
-    // 
+    // create method void is_file(), if it is a file, we're good to go, otherwise, check directory index
+    public void resolve_absolute_path(String directory_index){
+      String full_path = directory_index + path;
+    }
 
     /*
         If at any point, there is an error in parsing the request, break, and set the error flag to true; 
@@ -151,15 +148,6 @@ public class Request {
             }
         }
     }
-
-
-
-
-
-// create method void is_file(), if it is a file, we're good to go, otherwise, check directory index
-  public void is_file(){
-
-  }
 
 }
 

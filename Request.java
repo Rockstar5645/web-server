@@ -72,6 +72,7 @@ public class Request {
           return true; 
       }
 
+        is_script = false; 
       return false; 
     }
 

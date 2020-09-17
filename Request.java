@@ -20,6 +20,32 @@ public class Request {
     public Boolean is_script; 
 
     // create method Boolean is_uri_alised(), if it is, also modify the path, and resolve the full URI
+    public Boolean is_uri_aliased(Map<String, String> Alias){
+        
+        int i = 0; 
+        while (i < path.length()) {
+            if (path.charAt(i) == '/')
+                break;
+            else
+                i++; 
+        }
+
+        if (i == path.length())
+            return false;       // it is not script aliased 
+
+        
+        String prefix = "/" + path.substring(0, i + 1); 
+        if (Alias.containsKey(prefix)) {
+            // so it is uri aliased
+            String full_path = Alias.get(prefix) + path.substring(i + 1, path.length()); 
+            path = full_path; 
+
+            is_script = false; 
+            return true; 
+        }
+
+        return false; 
+    }
 
     // create method BOolean is_script_alised(), if it is, modify the path, and resolve the FULL URI, also,
     // we can set a variable, saying it's a script
@@ -46,6 +72,7 @@ public class Request {
                 StringTokenizer st = new StringTokenizer(requestLine); 
                 http_method = st.nextToken(); 
                 path = st.nextToken(); 
+                path = path.substring(1, path.length()); 
                 version = st.nextToken(); 
                 break; 
             }

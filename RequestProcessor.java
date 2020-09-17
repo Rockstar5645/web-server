@@ -21,6 +21,15 @@ public class RequestProcessor implements Runnable {
             // check if the req.error is true, and if it is, call res.return_400 or res.return_500
 
             // check if req.path is URI aliased, by calling req.is_uri_aliased(); 
+            if (req.is_uri_aliased(a_config.getAliasMap())) {
+                // this is indeed uri aliased
+                System.out.println("It is URI aliased"); 
+                System.out.println(req.path); 
+            } else {
+                System.out.println("It is not URI aliased"); 
+                System.out.println(req.path); 
+            }
+
             // check if req.path is script alised, if it's not uri alised, by calling req.is_script_alised()
 
             // so if neither of those previous methods, returned true, then call 

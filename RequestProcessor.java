@@ -23,26 +23,22 @@ public class RequestProcessor implements Runnable {
             // check if req.path is URI aliased, by calling req.is_uri_aliased(); 
             if (req.is_uri_aliased(a_config.getAliasMap())) {
                 // this is indeed uri aliased
-                System.out.println("It is URI aliased"); 
-                System.out.println(req.path); 
+                //System.out.println("It is URI aliased"); 
+                //System.out.println(req.path); 
             } else if (req.is_script_aliased(a_config.getScriptAliasMap())){
-                System.out.println("It is script URI aliased"); 
-                System.out.println(req.path); 
+                //System.out.println("It is script URI aliased"); 
+                //System.out.println(req.path); 
             } else {
-                System.out.println("Not aliased or script aliased.");
+                //System.out.println("Not aliased or script aliased.");
                 req.resolve_document_root(a_config.getDocumentRoot());
-                System.out.println(req.path);
+                //System.out.println(req.path);
             }
 
-            // check if req.path is script alised, if it's not uri alised, by calling req.is_script_alised()
+            
+            req.resolve_absolute_path(a_config.getDirectoryIndex()); 
+            //System.out.println("We have the absolute path: " + req.path); 
 
-            // so if neither of those previous methods, returned true, then call 
-            // req.resolve_document_root(a_config.getDocumentRoot())
-
-            // req.is_file()
-
-
-            // res.file_exists()
+            // perform the HT access Check 
 
             // if (req.is_script) then res.exec_script(string path)
             

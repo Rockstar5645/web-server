@@ -1,7 +1,6 @@
-
-
 import java.util.*; 
-import java.io.*; 
+import java.io.*;  
+import java.nio.file.*; 
 import java.net.*; 
 import java.time.*;
 import java.nio.charset.*; 
@@ -84,8 +83,21 @@ public class Request {
 
 
     // create method void is_file(), if it is a file, we're good to go, otherwise, check directory index
-    public void resolve_absolute_path(String directory_index){
-      String full_path = directory_index + path;
+    public void resolve_absolute_path(String directory_index) {
+        Path file = new File(path).toPath();
+
+        System.out.println("The path we have is: " + path); 
+        
+        if (Files.exists(file)) {
+            if (Files.isDirectory(file)) {
+                System.out.println("It's a directory"); 
+                path = path + directory_index; 
+            } else
+                System.out.println("It is not a directory"); 
+        } else
+            System.out.println("This file (directory or file) does not exist"); 
+
+        // now we have our absolute path
     }
 
     /*

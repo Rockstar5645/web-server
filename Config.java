@@ -13,8 +13,25 @@ public class Config {
     private Map<String, String> Mime; 
     
     // TODO: add if clause to read these two directives as well 
-    private String AccessFile; 
     private String DirectoryIndex; 
+    private Boolean directoryIndexExists = false; 
+
+    private String AccessFile; 
+    private Boolean accessFileExists = false; 
+
+    public String getAccessFile() {
+        if (accessFileExists)
+            return AccessFile;
+        else
+            return ".htaccess"; // default 
+    }
+
+    public String getDirectoryIndex() {
+        if (directoryIndexExists)
+            return DirectoryIndex;
+        else
+           return "index.html"; 
+    }
 
     public String getMimeType(String extension) {
         return Mime.get(extension); 
@@ -95,7 +112,19 @@ public class Config {
 
                 StringTokenizer st = new StringTokenizer(l); 
                 String directive = st.nextToken();
-                if (directive.equals("ServerRoot")) {
+                if (directive.equals("AccessFile")) {
+                    String af = st.nextToken(); 
+                    af = af.replace("\"", "");
+                    AccessFile = af;
+                    accessFileExists = true; 
+                    
+                } else if (directive.equals("DirectoryIndex")) {
+                    String di = st.nextToken();
+                    di = di.replace("\"", ""); 
+                    DirectoryIndex = di; 
+                    directoryIndexExists = true; 
+
+                } else if (directive.equals("ServerRoot")) {
                     String sroot = st.nextToken(); 
                     sroot = sroot.replace("\"", ""); 
                     ServerRoot = sroot; 

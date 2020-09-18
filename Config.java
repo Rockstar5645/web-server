@@ -157,5 +157,38 @@ public class Config {
 
             }
         }
+
+        // PARSER FOR HTACCESS FILE IF THERE IS ONE
+        Path htaccess = Paths.get("./conf/.htaccess");
+
+        if()
+
+
+        try(
+          BufferedReader inputStream =  new BufferedReader(new FileReader(htaccess.toString()));
+        ) {
+          String l;
+          while ((l = inputStream.readLine()) != null) {
+
+                StringTokenizer st = new StringTokenizer(l); 
+                String directive = st.nextToken();
+                if (directive.equals("AuthUserFile")) {
+                    String af = st.nextToken(); 
+                    af = af.replace("\"", "");
+                    AuthUserFile = af;
+                    authUserFileExists = true; 
+                } else if (directive.equals("AuthType")) {
+                    String typeArg = st.nextToken();
+                    typeArg = typeArg.replace("\"", ""); 
+                    if(typeArg == "basic"){
+
+                    }
+                    authTypeExists = true; 
+                } else if () {
+
+                }
+              }
+        }
+
     }
 }

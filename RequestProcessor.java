@@ -41,6 +41,10 @@ public class RequestProcessor implements Runnable {
             // perform the HT access Check 
 
             // if (req.is_script) then res.exec_script(string path)
+
+            // if (req.path) contains a .htaccess file, do this
+            if(req.)
+            
             
         } catch (Exception e) {
             // do nothing 

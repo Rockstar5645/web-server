@@ -26,6 +26,7 @@ public class Config {
             return ".htaccess"; // default 
     }
 
+
     public String getDirectoryIndex() {
         if (directoryIndexExists)
             return DirectoryIndex;
@@ -153,6 +154,13 @@ public class Config {
                     String full_path = st.nextToken(); 
                     full_path = full_path.replace("\"", ""); 
                     Alias.put(route, full_path); 
+                    
+                } else if (directive.equals("AccessFileName")) {
+                    String route = st.nextToken();
+                    String full_path = st.nextToken(); 
+                    full_path = full_path.replace("\"", ""); 
+                    AccessFile = full_path;
+                    accessFileExists = true; 
                 }
 
             }

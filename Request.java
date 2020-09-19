@@ -49,36 +49,36 @@ public class Request {
 
 
     public Boolean is_script_aliased(Map<String, String> ScriptAlias){
-      int i = 0; 
-      while (i < path.length()) {
-          if (path.charAt(i) == '/')
-              break;
-          else
-              i++; 
-      }
+        int i = 0; 
+        while (i < path.length()) {
+            if (path.charAt(i) == '/')
+                break;
+            else
+                i++; 
+        }
 
-      if (i == path.length())
-          return false;       // it is not script aliased 
+        if (i == path.length())
+            return false;       // it is not script aliased 
 
-      
-      String prefix = "/" + path.substring(0, i + 1); 
-      if (ScriptAlias.containsKey(prefix)) {
-          // so it is uri aliased
-          String full_path = ScriptAlias.get(prefix) + path.substring(i + 1, path.length()); 
-          path = full_path; 
+        
+        String prefix = "/" + path.substring(0, i + 1); 
+        if (ScriptAlias.containsKey(prefix)) {
+            // so it is uri aliased
+            String full_path = ScriptAlias.get(prefix) + path.substring(i + 1, path.length()); 
+            path = full_path; 
 
-          is_script = true; 
-          return true; 
-      }
+            is_script = true; 
+            return true; 
+        }
 
         is_script = false; 
-      return false; 
+        return false; 
     }
 
-    // create method void resolve_document_root(String doc_root)
+    
     public void resolve_document_root(String doc_root){
-      String full_path = doc_root + path;
-      path = full_path;
+        String full_path = doc_root + path;
+        path = full_path;
     }
 
 
@@ -96,8 +96,6 @@ public class Request {
                 System.out.println("It is not a directory"); 
         } else
             System.out.println("This file (directory or file) does not exist"); 
-
-        // now we have our absolute path
     }
 
     /*

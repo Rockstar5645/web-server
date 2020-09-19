@@ -86,16 +86,14 @@ public class Request {
     public void resolve_absolute_path(String directory_index) {
         Path file = new File(path).toPath();
 
-        System.out.println("The path we have is: " + path); 
+        //System.out.println("The path we have is: " + path); 
         
         if (Files.exists(file)) {
             if (Files.isDirectory(file)) {
-                System.out.println("It's a directory"); 
+                //System.out.println("It's a directory"); 
                 path = path + directory_index; 
-            } else
-                System.out.println("It is not a directory"); 
-        } else
-            System.out.println("This file (directory or file) does not exist"); 
+            }
+        }
     }
 
     /*

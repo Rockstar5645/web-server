@@ -1,5 +1,6 @@
 import java.util.*; 
 import java.io.*; 
+import java.nio.file.*; 
 import java.net.*; 
 import java.time.*;
 import java.nio.charset.*; 
@@ -39,11 +40,24 @@ public class RequestProcessor implements Runnable {
             //System.out.println("We have the absolute path: " + req.path); 
 
             // perform the HT access Check 
+            File resource = new File(req.path); 
+            String cwd = resource.getParent(); 
+            //System.out.println("Path requested: " + req.path); 
+            //System.out.println("Parent: " + cwd); 
+            
+            // check if HT access file exists
+            Path htpath = Paths.get(cwd, a_config.getAccessFile()); 
+            System.out.println("The path we're checking is: " + htpath.toString());  
+            
+            if (Files.exists(htpath)) {
+                System.out.println("HT access file exists"); 
+            } else
+                System.out.println("HT access file does not exist"); 
 
             // if (req.is_script) then res.exec_script(string path)
 
             // if (req.path) contains a .htaccess file, do this
-            if(req.)
+            
             
             
         } catch (Exception e) {

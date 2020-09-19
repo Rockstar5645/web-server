@@ -133,9 +133,12 @@ public class Request {
                 }
 
                 // we are at the end of the line, parse the header 
-                StringTokenizer st = new StringTokenizer(header_line, ": "); 
-                String header_name = st.nextToken(); 
-                String header_val = st.nextToken(); 
+                //System.out.println("header_line: " + header_line); 
+                String[] tokens = header_line.split(": "); 
+                String header_name = tokens[0]; 
+                String header_val = tokens[1]; 
+                
+                //System.out.println("header_name: " + header_name + " --- header_val: " + header_val); 
                 Headers.put(header_name, header_val); 
 
                 header_line = ""; 

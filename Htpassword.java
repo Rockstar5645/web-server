@@ -1,24 +1,28 @@
-package server.configuration;
-
 import java.util.HashMap;
 import java.util.Base64;
+import java.io.*; 
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 
 import java.io.IOException;
 
-public class Htpassword extends ConfigurationReader {
+public class Htpassword {
   private HashMap<String, String> passwords;
 
   public Htpassword( String filename ) throws IOException {
-    super( filename );
-    System.out.println( "Password file: " + filename );
 
     this.passwords = new HashMap<String, String>();
-    this.load();
+    try(
+        BufferedReader inputStream = new BufferedReader(new FileReader(filename));
+    ) {
+      String l;
+      while ((l = inputStream.readLine()) != null) {
+        this.parseLine(l); 
+      }
+    }
   }
 
-  protected void parseLine( String line ) {
+  public void parseLine( String line ) {
     String[] tokens = line.split( ":" );
 
     if( tokens.length == 2 ) {
@@ -38,6 +42,12 @@ public class Htpassword extends ConfigurationReader {
     String[] tokens = credentials.split( ":" );
 
     // TODO: implement this
+    if (this.passwords.containsKey(tokens[0])) {
+        return this.verifyPassword(tokens[0], tokens[1]); 
+    } else {
+      // invalid credentials entered
+      return false; 
+    }
   }
 
   private boolean verifyPassword( String username, String password ) {
@@ -45,6 +55,11 @@ public class Htpassword extends ConfigurationReader {
     // in the password file (keyed by username)
     // TODO: implement this - note that the encryption step is provided as a
     // method, below
+
+    String encryptedPassword = this.encryptClearPassword(password); 
+    //System.out.println("user entered username: " + username + " password: " + password); 
+    //System.out.println("encrypted: " + encryptedPassword); 
+    return (encryptedPassword.equals(this.passwords.get(username))); 
   }
 
   private String encryptClearPassword( String password ) {

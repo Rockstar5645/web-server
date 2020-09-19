@@ -6,13 +6,51 @@ import java.nio.charset.*;
 
 public class Response {
 
+    Request req; 
+    OutputStream out;
+    Config a; 
+
+    public String response_template(String status) {
+        String response = "HTTP/1.1 " + status + "\r\n";
+        response += ("Date: " + LocalDateTime.now().toString() + "\r\n"); 
+        response += "Server: akws\r\n";
+        response += "Connection: close\r\n";
+        return response;
+    }
+
+    public void send_404() throws IOException {
+        String response = this.response_template("404 Not Found"); 
+        response += "\r\n";
+        byte[] b = response.getBytes(Charset.forName("UTF-8")); 
+        out.write(b); 
+    }
+
+    public void send_401(String realm) throws IOException {
+        String response = this.response_template("401 Unauthorized");
+        response += "WWW-Authenticate: Basic realm=" + realm + ", charset=\"UTF-8\"\r\n\r\n";
+        byte[] b = response.getBytes(Charset.forName("UTF-8")); 
+        out.write(b); 
+    }
+
+    public void send_403() throws IOException {
+        System.out.println("sending 403"); 
+        String response = this.response_template("403 Forbidden");
+        response += "\r\n";
+        byte[] b = response.getBytes(Charset.forName("UTF-8")); 
+        out.write(b); 
+    }
+
     // we have a res.return_400 and res.return_500, res.return_404 method 
 
     // we have a method called file_exists, and if it doesn't, we call return_404
 
     // create exec_script that accepts path, and instantiates a process builder 
 
-    public Response(Request req, OutputStream out, Config a) throws IOException {
+    public Response(Request _req, OutputStream _out, Config _a) throws IOException {
+        this.req = _req; 
+        this.out = _out; 
+        this.a = _a; 
+
         String response = "HTTP/1.1 200 OK\r\n";
         response += ("Date: " + LocalDateTime.now().toString() + "\r\n"); 
         response += "Server: akws\r\n";
@@ -45,7 +83,7 @@ public class Response {
         response += "Content-Length: " + len + "\r\n\r\n"; 
         */
     
-        byte[] b = response.getBytes(Charset.forName("UTF-8")); 
+        //byte[] b = response.getBytes(Charset.forName("UTF-8")); 
         
         /*
         byte[] final_res = new byte[b.length + lbfile.length];
@@ -61,7 +99,7 @@ public class Response {
         }
         */
         
-        out.write(b); 
+        //out.write(b); 
 
     }
 }

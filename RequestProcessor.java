@@ -47,12 +47,56 @@ public class RequestProcessor implements Runnable {
             
             // check if HT access file exists
             Path htpath = Paths.get(cwd, a_config.getAccessFile()); 
-            System.out.println("The path we're checking is: " + htpath.toString());  
             
+            Boolean access = true; 
             if (Files.exists(htpath)) {
-                System.out.println("HT access file exists"); 
-            } else
-                System.out.println("HT access file does not exist"); 
+
+                // user is attempting to access aprotected resources
+                AccessFile af = new AccessFile(htpath.toString()); 
+                if (req.Headers.containsKey("Authorization")) {
+                    //System.out.println("contents of Authorization header: " + req.Headers.get("Authorization"));
+                    // The user is trying to authenticate themselves
+    
+                    Htpassword htp = new Htpassword(af.authUserFilePath);
+
+                    String header_val = req.Headers.get("Authorization");
+                    StringTokenizer st = new StringTokenizer(header_val); 
+                    String auth_type = st.nextToken();
+                    String creds = st.nextToken(); 
+
+                    if (htp.isAuthorized(creds)) {
+                        // go ahead and access the protected resource
+                        //System.out.println("Is authorized"); 
+                    } else {
+                        // send back a 403
+                        //System.out.println("User is not authorized"); 
+                        access = false; 
+                        res.send_403(); 
+                    }
+
+                } else {
+                    // we send back a 401 telling them to authenticate
+                    res.send_401(af.authName); 
+                    access = false; 
+                }
+            }
+
+            if (access) {
+                if (!req.http_method.equals("PUT") {
+
+                    Path file = new File(req.path).toPath();
+                    if (Files.exists(file)) {
+                        if (req.is_script) {
+                            
+                        } else {
+
+                        }
+                    } else {
+                        res.send_404(); 
+                    }
+                } 
+            }
+
 
             // if (req.is_script) then res.exec_script(string path)
 
@@ -60,9 +104,8 @@ public class RequestProcessor implements Runnable {
             
             
             
-        } catch (Exception e) {
-            // do nothing 
-            System.out.println("Something happenned here"); 
+        } catch(IOException e) {
+            System.out.println(e.toString());
         } finally {
             try {
                 if (clientSocket != null) {

@@ -18,6 +18,7 @@ public class RequestProcessor implements Runnable {
         ) {
 
             Request req = new Request(in); 
+            System.out.println("got request: " + req.requestLine); 
             req.host = clientSocket.getInetAddress().toString().replace("/", ""); 
 
             Response res = new Response(req, out, a, l); 

@@ -10,15 +10,18 @@ public class WebServer {
         Config a = new Config(); 
         Logger l = new Logger(a.getLogFile()); 
 
-        while (true) {
-            try (
-                ServerSocket serverSocket = new ServerSocket(a.getPort());
-            ) {
+    
+        try (
+            ServerSocket serverSocket = new ServerSocket(a.getPort());
+        ) {
+            System.out.println("Listening on port " + a.getPort()); 
+            while (true) {
                 Socket clientSocket = serverSocket.accept();
                 RequestProcessor rp = new RequestProcessor(clientSocket, a, l); 
                 (new Thread(rp)).start(); 
             }
         }
+    
         
     }
 }

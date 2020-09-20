@@ -160,6 +160,19 @@ public class Response {
     public void send_200(String path, ZonedDateTime zdt) throws IOException {
         String response = this.response_template("200 OK");
         
+        int dot = path.lastIndexOf('.'); 
+        if (dot > 0) {
+            String fileExtension = path.substring(dot + 1); 
+            String contentType = a.getMimeType(fileExtension);
+            if (contentType == null) {
+                response += "Content-Type: Unknown\r\n";
+            } else {
+                response += "Content-Type: " + contentType + "\r\n"; 
+            }
+        } else {
+            response += "Content-Type: Unknown\r\n";
+        }
+        
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss O");
         response += "Last-Modified: " + formatter.format(zdt) + "\r\n"; 
 

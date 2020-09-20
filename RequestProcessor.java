@@ -8,7 +8,8 @@ import java.nio.charset.*;
 public class RequestProcessor implements Runnable {
 
     Socket clientSocket = null; 
-    Config a_config = null; 
+    Config a = null; 
+    Logger l = null; 
 
     public void run() {
         try (
@@ -17,23 +18,25 @@ public class RequestProcessor implements Runnable {
         ) {
 
             Request req = new Request(in); 
-            Response res = new Response(req, out, a_config); 
+            req.host = clientSocket.getInetAddress().toString().replace("/", ""); 
 
-            if (req.is_uri_aliased(a_config.getAliasMap())) {
+            Response res = new Response(req, out, a, l); 
+
+            if (req.is_uri_aliased(a.getAliasMap())) {
                 // it's uri aliased
-            } else if (req.is_script_aliased(a_config.getScriptAliasMap())){
+            } else if (req.is_script_aliased(a.getScriptAliasMap())){
                 // script aliased
             } else {
-                req.resolve_document_root(a_config.getDocumentRoot());
+                req.resolve_document_root(a.getDocumentRoot());
             }
 
             
-            req.resolve_absolute_path(a_config.getDirectoryIndex()); 
+            req.resolve_absolute_path(a.getDirectoryIndex()); 
 
             File resource = new File(req.path); 
             String cwd = resource.getParent(); 
 
-            Path htpath = Paths.get(cwd, a_config.getAccessFile()); 
+            Path htpath = Paths.get(cwd, a.getAccessFile()); 
             
             Boolean access = true; 
             if (Files.exists(htpath)) {
@@ -48,7 +51,7 @@ public class RequestProcessor implements Runnable {
                     String auth_type = st.nextToken();
                     String creds = st.nextToken(); 
 
-                    if (htp.isAuthorized(creds)) {
+                    if (htp.isAuthorized(creds, req)) {
                         // go ahead and access the protected resource
                     } else { 
                         access = false; 
@@ -83,8 +86,9 @@ public class RequestProcessor implements Runnable {
         }
     }
     
-    public RequestProcessor(Socket clientSocket, Config a) {
-        this.clientSocket = clientSocket; 
-        this.a_config = a; 
+    public RequestProcessor(Socket _clientSocket, Config _a, Logger _l) {
+        this.clientSocket = _clientSocket; 
+        this.a = _a; 
+        this.l = _l; 
     }
 }

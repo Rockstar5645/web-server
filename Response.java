@@ -13,6 +13,7 @@ public class Response {
     Request req; 
     OutputStream out;
     Config a; 
+    Logger l; 
 
     public void byteSend(String response) throws IOException {
         byte[] b = response.getBytes(Charset.forName("UTF-8")); 
@@ -31,12 +32,14 @@ public class Response {
         String response = this.response_template("404 Not Found"); 
         response += "\r\n";
         this.byteSend(response); 
+        l.log(req, 404, 0);
     }
 
     public void send_401(String realm) throws IOException {
         String response = this.response_template("401 Unauthorized");
         response += "WWW-Authenticate: Basic realm=" + realm + ", charset=\"UTF-8\"\r\n\r\n";
         this.byteSend(response); 
+        l.log(req, 401, 0);
     }
 
     public void send_403() throws IOException {
@@ -44,29 +47,32 @@ public class Response {
         String response = this.response_template("403 Forbidden");
         response += "\r\n";
         this.byteSend(response); 
+        l.log(req, 403, 0);
     }
 
     public void send_201() throws IOException {
         String response = this.response_template("201 Created"); 
         response += "Location: " + req.og_path + "\r\n\r\n";
         this.byteSend(response); 
+        l.log(req, 201, 0);
     }
 
     public void send_500() throws IOException {
         String response = this.response_template("500 Internal Server Error");
         response += "\r\n"; 
         this.byteSend(response); 
+        l.log(req, 500, 0);
     }
 
     public void send_204() throws IOException {
         String response = this.response_template("204 No Content"); 
         response += "\r\n";
         this.byteSend(response); 
+        l.log(req, 204, 0);
     }
 
     public void process_request() throws IOException {
         if (req.http_method.equals("PUT")) {
-            System.out.println("got a put request"); 
             Path write_path = Paths.get(req.path);
             List<Byte> body = req.body; 
             
@@ -74,6 +80,10 @@ public class Response {
             for (int i = 0; i < body.size(); i++) {
                 data[i] = body.get(i); 
             }
+
+            File f = new File(req.path); 
+            File parDir = new File(f.getParent()); 
+            parDir.mkdirs();
 
             try (OutputStream file_out = new BufferedOutputStream(Files.newOutputStream(write_path))) {
 
@@ -83,7 +93,6 @@ public class Response {
                 this.send_500(); 
                 return; 
             }
-            System.out.println("Successfully wrote contents to the file system");
             this.send_201(); 
 
         } else if (req.http_method.equals("DELETE")) {
@@ -145,6 +154,7 @@ public class Response {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss O");
         response += "Last-Modified: " + formatter.format(zdt) + "\r\n\r\n"; 
         this.byteSend(response); 
+        l.log(req, 304, 0);
     }
 
     public void send_200(String path, ZonedDateTime zdt) throws IOException {
@@ -158,6 +168,7 @@ public class Response {
             System.out.println("Size of file is: " + len); 
             response += "Content-Length: " + len + "\r\n\r\n";
             this.byteSend(response); 
+            l.log(req, 200, 0);
             return; 
         }
 
@@ -194,12 +205,13 @@ public class Response {
         }
         
         out.write(final_res); 
+        l.log(req, 200, len);
     }
 
-    public Response(Request _req, OutputStream _out, Config _a) throws IOException {
+    public Response(Request _req, OutputStream _out, Config _a, Logger _l) throws IOException {
         this.req = _req; 
         this.out = _out; 
         this.a = _a; 
-
+        this.l = _l; 
     }
 }

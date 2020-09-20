@@ -30,7 +30,7 @@ public class Htpassword {
     }
   }
 
-  public boolean isAuthorized( String authInfo ) {
+  public boolean isAuthorized( String authInfo , Request req) {
     // authInfo is provided in the header received from the client
     // as a Base64 encoded string.
     String credentials = new String(
@@ -40,6 +40,7 @@ public class Htpassword {
 
     // The string is the key:value pair username:password
     String[] tokens = credentials.split( ":" );
+    req.username = tokens[0]; 
 
     // TODO: implement this
     if (this.passwords.containsKey(tokens[0])) {

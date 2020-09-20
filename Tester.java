@@ -9,13 +9,14 @@ public class Tester {
 
     public static void main(String... args) throws IOException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss O");
-        //System.out.println(formatter.format(ZonedDateTime.now(ZoneOffset.UTC).minusDays(11)));
+        DateTimeFormatter clgFormatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z");
+        System.out.println(clgFormatter.format(ZonedDateTime.now(ZoneId.systemDefault()).minusDays(11)));
 
         ZonedDateTime zdt = ZonedDateTime.parse("Wed, 09 Sep 2020 08:05:12 GMT", 
             DateTimeFormatter.RFC_1123_DATE_TIME);
         
         ZonedDateTime zdtNow = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(4); 
-        System.out.println("now: " + zdtNow);
+       // System.out.println("now: " + zdtNow);
 
         Path path = new File("C:/Users/akhil/School/Fall20/web_dev/web-server-katie-akhil/public_html/abc.txt").toPath(); 
 
@@ -26,11 +27,11 @@ public class Tester {
 
             // ZoneId.systemDefault()
             ZonedDateTime zdtFile = ZonedDateTime.ofInstant(fileTime.toInstant(), ZoneOffset.UTC); 
-            System.out.println("file: " + zdtFile); 
+            //System.out.println("file: " + zdtFile); 
 
 
         } catch (IOException e) {
-            System.err.println("Cannot get the last modified time - " + e);
+            //System.err.println("Cannot get the last modified time - " + e);
         }
 
     }

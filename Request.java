@@ -20,6 +20,10 @@ public class Request {
     public Boolean error; 
     public Boolean is_script; 
 
+    public String host; 
+    public String requestLine; 
+    public String username = "-"; 
+
     // create method Boolean is_uri_alised(), if it is, also modify the path, and resolve the full URI
     public Boolean is_uri_aliased(Map<String, String> Alias){
         
@@ -112,6 +116,7 @@ public class Request {
         while (true) {
             c = (char) in.read(); 
             if (c == '\r') {
+                this.requestLine = requestLine; 
                 c = (char) in.read(); // get the \n as well 
                 StringTokenizer st = new StringTokenizer(requestLine); 
                 http_method = st.nextToken(); 

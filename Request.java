@@ -13,6 +13,7 @@ public class Request {
     public String og_path;
     public String path; // this is the path
     public Map<String, String> queryParams; 
+    public String queryString = ""; 
     
     public String version; 
 
@@ -127,6 +128,8 @@ public class Request {
                 if (uriParts.length == 2) {
                     // there is a query string 
                     String queryString = uriParts[1]; 
+                    this.queryString = uriParts[1]; 
+                    /*
                     StringTokenizer queries = new StringTokenizer(queryString, "&"); 
                     while (queries.hasMoreTokens()) {
                         String query = queries.nextToken(); 
@@ -135,6 +138,7 @@ public class Request {
                         String val = queryParts[1]; 
                         queryParams.put(key, val); 
                     }
+                    */
                 } 
 
                 path = uriParts[0]; 

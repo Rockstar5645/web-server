@@ -15,6 +15,53 @@ public class Response {
     Config a; 
     Logger l; 
 
+    public void execScript() throws IOException {
+        ProcessBuilder processBuilder = new ProcessBuilder(); 
+
+        //System.out.println("attempting to execute script at: " + req.path); 
+        processBuilder.command("C:/Strawberry/perl/bin/perl.exe", "-T", req.path); 
+        //processBuilder.command("python", "--version"); 
+
+        Map<String, String> env = processBuilder.environment(); 
+        env.put("SERVER_PROTOCOL", req.version);
+        env.put("QUERY_STRING", req.queryString);
+
+        req.Headers.forEach((header, val) -> {
+            env.put("HTTP_" + header, val); 
+        });
+
+        Process process = processBuilder.start(); 
+
+        OutputStream stdin = process.getOutputStream(); // this is what we use to write to the process
+        InputStream stdout = process.getInputStream();  // this is what we read from the process
+
+        if (req.http_method.equals("POST") || req.http_method.equals("PUT")) {
+
+            // the request may have a body that we need to send to the standard input of the subprocess
+            List<Byte> body = req.body; 
+            
+            byte[] data = new byte[body.size()];
+            for (int i = 0; i < body.size(); i++) {
+                data[i] = body.get(i); 
+            }
+
+            try (OutputStream file_out = new BufferedOutputStream(stdin)) {
+
+                file_out.write(data, 0, data.length);
+            }
+        }
+
+        String response = this.response_template("200 OK"); 
+        //response += "Content-Length: 12\r\n\r\n";
+        this.byteSend(response); 
+
+        int c;
+        while ((c = stdout.read()) != -1) {
+            //System.out.println("Is this even getting executed"); 
+            out.write(c);
+        }
+    }
+
     public void byteSend(String response) throws IOException {
         byte[] b = response.getBytes(Charset.forName("UTF-8")); 
         out.write(b); 

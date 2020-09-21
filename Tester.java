@@ -7,32 +7,36 @@ import java.time.*;
 
 public class Tester {
 
-    public static void main(String... args) throws IOException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss O");
-        DateTimeFormatter clgFormatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z");
-        System.out.println(clgFormatter.format(ZonedDateTime.now(ZoneId.systemDefault()).minusDays(11)));
-
-        ZonedDateTime zdt = ZonedDateTime.parse("Wed, 09 Sep 2020 08:05:12 GMT", 
-            DateTimeFormatter.RFC_1123_DATE_TIME);
+    public static void main(String... args) throws IOException, InterruptedException {
         
-        ZonedDateTime zdtNow = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(4); 
-       // System.out.println("now: " + zdtNow);
+        ProcessBuilder processBuilder = new ProcessBuilder(); 
 
-        Path path = new File("C:/Users/akhil/School/Fall20/web_dev/web-server-katie-akhil/public_html/abc.txt").toPath(); 
+        processBuilder.command("python", "--version"); 
 
-        FileTime fileTime;
-        try {
-            fileTime = Files.getLastModifiedTime(path);
-            //System.out.println(fileTime); 
+        Map<String, String> env = processBuilder.environment(); 
 
-            // ZoneId.systemDefault()
-            ZonedDateTime zdtFile = ZonedDateTime.ofInstant(fileTime.toInstant(), ZoneOffset.UTC); 
-            //System.out.println("file: " + zdtFile); 
+        env.forEach((s, s2) -> {
+            System.out.printf("%s %s %n", s, s2);
+        });
 
+        System.out.printf("%s %n", env.get("PATH"));
+        
+        String homeDir = System.getProperty("user.home");
 
-        } catch (IOException e) {
-            //System.err.println("Cannot get the last modified time - " + e);
+        File fileName = new File(String.format("%s/Documents/tmp/output.txt", homeDir));
+
+        processBuilder.redirectOutput(fileName);
+        
+        Process p = processBuilder.start(); 
+        try (BufferedReader reader = new BufferedReader(
+            new InputStreamReader(p.getInputStream()))) {
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+
         }
-
     }
 }

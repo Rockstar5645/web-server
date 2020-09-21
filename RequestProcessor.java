@@ -18,7 +18,6 @@ public class RequestProcessor implements Runnable {
         ) {
 
             Request req = new Request(in); 
-            System.out.println("got request: " + req.requestLine); 
             req.host = clientSocket.getInetAddress().toString().replace("/", ""); 
 
             Response res = new Response(req, out, a, l); 
@@ -67,9 +66,8 @@ public class RequestProcessor implements Runnable {
 
             if (access) {
                 if (req.is_script) {
-                    System.out.println("It's a script"); 
-                    Process process = new ProcessBuilder("java", "-version").start();
-
+                    
+                    res.execScript(); 
                 } else {
                     res.process_request(); 
                 }

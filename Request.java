@@ -10,13 +10,19 @@ public class Request {
     public Map<String, String> Headers; 
     public String http_method; 
 
+    public String og_path;
     public String path; // this is the path
+    public Map<String, String> queryParams; 
     
     public String version; 
 
     List<Byte> body; 
     public Boolean error; 
     public Boolean is_script; 
+
+    public String host; 
+    public String requestLine; 
+    public String username = "-"; 
 
     // create method Boolean is_uri_alised(), if it is, also modify the path, and resolve the full URI
     public Boolean is_uri_aliased(Map<String, String> Alias){
@@ -78,16 +84,16 @@ public class Request {
     
     public void resolve_document_root(String doc_root){
         String full_path = doc_root + path;
+        is_script = false; 
         path = full_path;
     }
 
 
     // create method void is_file(), if it is a file, we're good to go, otherwise, check directory index
     public void resolve_absolute_path(String directory_index) {
+
         Path file = new File(path).toPath();
 
-        //System.out.println("The path we have is: " + path); 
-        
         if (Files.exists(file)) {
             if (Files.isDirectory(file)) {
                 //System.out.println("It's a directory"); 
@@ -106,13 +112,33 @@ public class Request {
         char c;
         // read the request line 
         String requestLine = ""; 
+        queryParams = new HashMap<>(); 
         while (true) {
             c = (char) in.read(); 
             if (c == '\r') {
+                this.requestLine = requestLine; 
                 c = (char) in.read(); // get the \n as well 
                 StringTokenizer st = new StringTokenizer(requestLine); 
                 http_method = st.nextToken(); 
-                path = st.nextToken(); 
+
+                String URI = st.nextToken(); 
+                String[] uriParts = URI.split("\\?");
+
+                if (uriParts.length == 2) {
+                    // there is a query string 
+                    String queryString = uriParts[1]; 
+                    StringTokenizer queries = new StringTokenizer(queryString, "&"); 
+                    while (queries.hasMoreTokens()) {
+                        String query = queries.nextToken(); 
+                        String[] queryParts = query.split("="); 
+                        String key = queryParts[0]; 
+                        String val = queryParts[1]; 
+                        queryParams.put(key, val); 
+                    }
+                } 
+
+                path = uriParts[0]; 
+                og_path = path; 
                 path = path.substring(1, path.length()); 
                 version = st.nextToken(); 
                 break; 

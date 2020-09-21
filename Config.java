@@ -7,12 +7,12 @@ public class Config {
     private String ServerRoot; 
     private String DocumentRoot; 
     private Integer Listen; 
+    private Boolean portSet = false; 
     private String LogFile; 
     private Map<String, String> ScriptAlias; 
     private Map<String, String> Alias; 
     private Map<String, String> Mime; 
     
-    // TODO: add if clause to read these two directives as well 
     private String DirectoryIndex; 
     private Boolean directoryIndexExists = false; 
 
@@ -47,7 +47,11 @@ public class Config {
     }
 
     public Integer getPort() {
-        return Listen; 
+        if (portSet) {
+            return Listen; 
+        } else {
+            return 8080; 
+        }
     }
 
     public String getLogFile() {
@@ -137,6 +141,7 @@ public class Config {
 
                 } else if (directive.equals("Listen")) {
                     Listen = Integer.parseInt(st.nextToken()); 
+                    portSet = true; 
 
                 } else if (directive.equals("LogFile")) {
                     String lfile = st.nextToken();

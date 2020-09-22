@@ -19,7 +19,7 @@ public class Response {
         ProcessBuilder processBuilder = new ProcessBuilder(); 
 
         //System.out.println("attempting to execute script at: " + req.path); 
-        processBuilder.command("perl", "-T", req.path); 
+        processBuilder.command(req.path); 
         //processBuilder.command("python", "--version"); 
 
         Map<String, String> env = processBuilder.environment(); 

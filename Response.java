@@ -70,7 +70,7 @@ public class Response {
     public String response_template(String status) {
         String response = "HTTP/1.1 " + status + "\r\n";
         response += ("Date: " + LocalDateTime.now().toString() + "\r\n"); 
-        response += "Server: akws\r\n";
+        response += "Server: akhil-katie\r\n";
         response += "Connection: close\r\n";
         return response;
     }

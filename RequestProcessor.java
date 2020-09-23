@@ -12,6 +12,7 @@ public class RequestProcessor implements Runnable {
     Logger l = null; 
 
     public void run() {
+
         try (
             OutputStream out = clientSocket.getOutputStream();
             InputStream in = clientSocket.getInputStream();
@@ -22,58 +23,69 @@ public class RequestProcessor implements Runnable {
 
             Response res = new Response(req, out, a, l); 
 
-            if (req.is_uri_aliased(a.getAliasMap())) {
-                // it's uri aliased
-            } else if (req.is_script_aliased(a.getScriptAliasMap())){
-                // script aliased
-            } else {
-                req.resolve_document_root(a.getDocumentRoot());
-            }
+            try {
+                if (req.is_uri_aliased(a.getAliasMap())) {
+                    // it's uri aliased
+                } else if (req.is_script_aliased(a.getScriptAliasMap())){
+                    // script aliased
+                } else {
+                    req.resolve_document_root(a.getDocumentRoot());
+                }
 
-            
-            req.resolve_absolute_path(a.getDirectoryIndex()); 
+                
+                req.resolve_absolute_path(a.getDirectoryIndex()); 
 
-            File resource = new File(req.path); 
-            String cwd = resource.getParent(); 
+                File resource = new File(req.path); 
+                String cwd = resource.getParent(); 
 
-            Path htpath = Paths.get(cwd, a.getAccessFile()); 
-            
-            Boolean access = true; 
-            if (Files.exists(htpath)) {
+                Path htpath = Paths.get(cwd, a.getAccessFile()); 
+                
+                Boolean access = true; 
+                if (Files.exists(htpath)) {
 
-                AccessFile af = new AccessFile(htpath.toString()); 
-                if (req.Headers.containsKey("Authorization")) {
-    
-                    Htpassword htp = new Htpassword(af.authUserFilePath);
+                    AccessFile af = new AccessFile(htpath.toString()); 
+                    if (req.Headers.containsKey("Authorization")) {
+        
+                        Htpassword htp = new Htpassword(af.authUserFilePath);
 
-                    String header_val = req.Headers.get("Authorization");
-                    StringTokenizer st = new StringTokenizer(header_val); 
-                    String auth_type = st.nextToken();
-                    String creds = st.nextToken(); 
+                        String header_val = req.Headers.get("Authorization");
+                        StringTokenizer st = new StringTokenizer(header_val); 
+                        String auth_type = st.nextToken();
+                        String creds = st.nextToken(); 
 
-                    if (htp.isAuthorized(creds, req)) {
-                        // go ahead and access the protected resource
-                    } else { 
+                        if (htp.isAuthorized(creds, req)) {
+                            // go ahead and access the protected resource
+                        } else { 
+                            access = false; 
+                            res.send_403(); 
+                        }
+
+                    } else {
+                        res.send_401(af.authName); 
                         access = false; 
-                        res.send_403(); 
                     }
+                }
 
-                } else {
-                    res.send_401(af.authName); 
-                    access = false; 
+
+                if (access) {
+                    if (req.is_script) {
+                        
+                        res.execScript(); 
+                    } else {
+                        res.process_request(); 
+                    }
+                }
+            } catch (Exception e) {
+                try {
+                    res.send_500(); 
+                } catch(IOException ioe) {
+                    // welp we tried
+                    System.out.println(ioe); 
                 }
             }
-
-            if (access) {
-                if (req.is_script) {
-                    
-                    res.execScript(); 
-                } else {
-                    res.process_request(); 
-                }
-            }
-        } catch(IOException e) {
-            System.out.println(e.toString());
+            
+        } catch(Exception e) {
+            System.out.println("Error"); 
         } finally {
             try {
                 if (clientSocket != null) {

@@ -8,6 +8,7 @@ import java.nio.charset.*;
 import java.time.format.DateTimeFormatter;
 import java.nio.file.attribute.FileTime; 
 
+// add a comment and change something
 public class Logger {
 
     public String logFile; 
